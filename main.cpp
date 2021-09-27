@@ -27,7 +27,7 @@ ro run
 #include <vector>
 #include <algorithm>
 #include <list>
-
+#pragma comment (lib,"Gdiplus.lib")
 using namespace std;
 using namespace Gdiplus;
 
