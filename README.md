@@ -3,10 +3,16 @@ This is an implementation of the algorithm described in the paper "Robust Recogn
 
 This uses gdi plus libraries for the initial processing of the input jpg files.
 to compile ,run
+
 g++ -mwindows main.cpp -lgdiplus -o barcode
+
 to run
+
 ./barcode.exe barcode1.jpg false
+
 the first parameter is the file path of the jpeg image and the second parameter turns debug output on or off
+
+Ten sample images have been uploaded, of which all except number nine are correctly read.
 
 vector<long double> getScanline(string file_name,bool print)
 
