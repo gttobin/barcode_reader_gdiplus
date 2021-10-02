@@ -2,7 +2,7 @@
 This is an implementation of the algorithm described in the paper "Robust Recognition of 1-D Barcodes Using Camera Phones Steffen Wachenfeld, Sebastian Terlunen, Xiaoyi Jiang Computer Vision and Pattern Recognition Group, Department of Computer Science, University of Munster, Germany"
 
 This uses gdi plus libraries for the initial processing of the input jpg files.
-On Windows from a command prompt, run
+On Windows from a Microsoft Visual Studio developer command prompt, run
 
 cl /clr main.cpp
 
