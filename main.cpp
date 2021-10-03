@@ -159,9 +159,39 @@ vector<long double> getScanline(string file_name,bool print)
 				    		  scanline[i]=1.0;
 				    	  }
     }
+    int index_of_first_black_pixel=0;
+    int index_of_last_black_pixel=599;
+
+    for( int j = scanline.size()-1; j >= 0; j--)
+	{
+                            if(scanline[j]<0.5)
+                            {
+
+                                index_of_last_black_pixel=j;
+                                break;
+                            }
+	}
+		     	      scanline.erase( scanline.begin()+index_of_last_black_pixel+1, scanline.end()  );
+    for( int j = 0; j < scanline.size(); j++)
+    {
+                            if(scanline[j]<0.5)
+                            {
+                                index_of_first_black_pixel=j;
+
+
+                                break;
+                            }
+    }
+                     scanline.erase( scanline.begin(), scanline.begin() + index_of_first_black_pixel-1);
+
+
+
 
     if(print)
     {
+        printf("\nindex_of_first_black_pixel %d",index_of_first_black_pixel);
+
+        printf("\nindex_of_last_black_pixel %d",index_of_last_black_pixel);
         printf("\nscanline length %llu",scanline.size());
 	}
 	return scanline;
@@ -169,13 +199,14 @@ vector<long double> getScanline(string file_name,bool print)
 
 }
 
+
 vector<vector<int>> bars(vector<long double> scanline,long double iDiff,bool print)
 {
 
 
 		 long double  intensityDiff =iDiff;
 
-		 long double diff=0;
+		 long double diff=0.0;
 
 		 struct  points_struct
 		 {
@@ -193,7 +224,7 @@ vector<vector<int>> bars(vector<long double> scanline,long double iDiff,bool pri
 		 {
 
 			 diff=diff + scanline[i] -scanline[i+1];
-
+			// printf("\n %f",scanline[i] -scanline[i+1]);
 			 if(abs(diff)>=intensityDiff )
 			 {
 
@@ -202,7 +233,7 @@ vector<vector<int>> bars(vector<long double> scanline,long double iDiff,bool pri
 				 temp.intensity=scanline[i+1];
 				 if(print)
 				 {
-				 printf("( %i   %Lf)",temp.point,	temp.intensity);
+				 printf("\n( %i,%f)",temp.point,	(double)temp.intensity);
 				 }
 				 points.push_back(temp);
 				 diff=0;
@@ -222,7 +253,7 @@ vector<vector<int>> bars(vector<long double> scanline,long double iDiff,bool pri
 		 vector<binarizedPoints_struct> binarizedPoints;
 		 if(print)
 		 {
-		 printf("\nbinarizedpoints 1\n");
+		 printf("\nbinarizedpoints");
 		 }
 		 for(unsigned  int i=0;i<points.size();i++)
 		 {
@@ -240,7 +271,7 @@ vector<vector<int>> bars(vector<long double> scanline,long double iDiff,bool pri
 			 		binarizedPoints.push_back(temp1);
 			 		 if(print)
 			 		 {
-			 		  printf(" (%d  %Lf) ",temp1.point,temp1.intensity);
+			 		  printf("\n white (%d  %f) ",temp1.point,(double)temp1.intensity);
 			 		 }
 			 	}
 			 	else
@@ -251,14 +282,14 @@ vector<vector<int>> bars(vector<long double> scanline,long double iDiff,bool pri
 			 		binarizedPoints.push_back(temp1);
 			 		 if(print)
 			 		 {
-			 		  printf(" (%d  %Lf) ",temp1.point,temp1.intensity);
+			 		  printf("\n black (%d  %f) ",temp1.point,(double)temp1.intensity);
 			 		 }
 			 	}
 		 }
 		 if(print)
 		 {
-		 printf("\nbinarizedPoints 1 length %llu",binarizedPoints.size());
-		 printf("\nbinarizedPoints 2");
+		 printf("\nbinarizedPoints  length %llu",binarizedPoints.size());
+		 printf("\nbinarizedPoints condensed");
 		 }
 		 for(unsigned  int i=0;i<binarizedPoints.size()-1;i++)
 		 {
@@ -269,14 +300,16 @@ vector<vector<int>> bars(vector<long double> scanline,long double iDiff,bool pri
 			 {
 				 binarizedPoints.erase(binarizedPoints.begin()+i);i--;
 			 }
-			 if(print)
-			{
-			 printf(" (%d %Lf)",binarizedPoints[i].point,binarizedPoints[i].intensity);
-			}
+
 		 }
 		 if(print)
 		 {
-		 printf("\nbinarizedPoints length 2 %llu",binarizedPoints.size());
+		      for(unsigned  int i=0;i<binarizedPoints.size()-1;i++)
+              {
+                  const char * st= binarizedPoints[i].blackOrWhite ? "white" : "black";
+			      printf("\n%s (%d %f )",st,binarizedPoints[i].point,(double)binarizedPoints[i].intensity);
+              }
+		 printf("\nbinarizedPoints length condensed %llu",binarizedPoints.size());
 		 }
 		 struct averagePoints_struct
 		 {
@@ -311,7 +344,7 @@ vector<vector<int>> bars(vector<long double> scanline,long double iDiff,bool pri
 
 	    if(print)
 	   	{
-	    printf("\naveragePoints \n");
+	    printf("\naveragePoints");
 	   	}
 	    for(unsigned  int i=binarizedPoints.size();i>=round(binarizedPoints.size()/2)-7;i--)
 		{
@@ -343,7 +376,7 @@ vector<vector<int>> bars(vector<long double> scanline,long double iDiff,bool pri
 	     {
 		for(unsigned  int i=0;i<averagePoints.size();i++)
 		{
-			printf(" (%d, %Lf )",averagePoints[i].point, averagePoints[i].intensity);
+			printf("\n(%d, %f )",averagePoints[i].point, (double)averagePoints[i].intensity);
 		}
 
 
@@ -353,7 +386,7 @@ vector<vector<int>> bars(vector<long double> scanline,long double iDiff,bool pri
 
 		if(print)
 		{
-		printf("\naverage points extended 1 \n");
+		printf("\naverage points expanded ");
 		}
 		for(unsigned  int i=0;i<(averagePoints.size());i++)
 		{
@@ -368,15 +401,15 @@ vector<vector<int>> bars(vector<long double> scanline,long double iDiff,bool pri
 				averagePointsExpanded.push_back(temp2);
 				 if(print)
 				 {
-				 printf("(%d, %Lf) ",temp2.point,averagePoints[i].intensity);
+				 printf("\n(%d, %f) ",temp2.point,(double)averagePoints[i].intensity);
 				 }
 			}
 
 		}
 		 if(print)
 		 {
-			 printf("\naverage points extended 1 length %llu\n",averagePointsExpanded.size());
-			 printf("\naverage points extended 2");
+			 printf("\naverage points expanded length %llu\n",averagePointsExpanded.size());
+			 printf("\naverage points expanded 2");
 		 }
 		for(  int i=0;i<=averagePoints[0].point;i++)
 			{
@@ -386,17 +419,17 @@ vector<vector<int>> bars(vector<long double> scanline,long double iDiff,bool pri
 				averagePointsExpanded.insert(averagePointsExpanded.begin(),temp);
 				 if(print)
 				{
-					 printf(" (%d %Lf) ",temp.point,averagePoints[0].intensity);
+					 printf("\n(%d %f) ",temp.point,(double)averagePoints[0].intensity);
 				}
 			}
 		 if(print)
 		 {
-			 printf("\naverage points extended 2 length %llu\n",averagePointsExpanded.size());
+			 printf("\naverage points expanded 2 length %llu\n",averagePointsExpanded.size());
 		 }
 
 		 if(print)
 		 {
-		printf("\naverage points extended 3");
+		printf("\naverage points expanded 3");
 		 }
 			for(unsigned int i=averagePoints[averagePoints.size()-1].point+1;i<scanline.size();i++)
 		    {
@@ -412,12 +445,12 @@ vector<vector<int>> bars(vector<long double> scanline,long double iDiff,bool pri
 			{
 			for(unsigned  int i=0;i<averagePointsExpanded.size();i++)
 			{
-				printf(" (%d %Lf) ",averagePointsExpanded[i].point,averagePointsExpanded[i].intensity);
+				printf("\n(%d %f) ",averagePointsExpanded[i].point,(double)averagePointsExpanded[i].intensity);
 
 			}
 			printf("\naveragePointsExpanded 3 length %llu",averagePointsExpanded.size());
 
-		 printf("\n binarizedPoints2 ");
+		 printf("\n binarizedPoints 2 ");
 			}
 	    vector<int> binarizedPoints2;
 	    for(unsigned  int i=0;i<averagePointsExpanded.size();i++)
@@ -436,9 +469,9 @@ vector<vector<int>> bars(vector<long double> scanline,long double iDiff,bool pri
 	   	{
 	    for(unsigned  int i=0;i<binarizedPoints2.size();i++)
 	    {
-	    	printf("( %d %d )",i,binarizedPoints2[i]);
+	    	printf("\n(%d,%d)",i,binarizedPoints2[i]);
 	    }
-	    printf("\n binarizedPoints2 length %llu\n",binarizedPoints2.size());
+	    printf("\n binarizedPoints2 length %llu",binarizedPoints2.size());
 	   	}
 	    vector<vector<int>> bars;
 	    int l=binarizedPoints2.size();
@@ -500,7 +533,7 @@ vector<vector<int>> bars(vector<long double> scanline,long double iDiff,bool pri
 	    }
 	    if(print)
 	   	{
-	    printf("\n bars length 1 %llu",bars.size());
+	    printf("\nnumber of  bars   %llu",bars.size());
 	   	}
 	  for(unsigned  int i=l;i>0;i--)
 	  {
@@ -522,7 +555,6 @@ vector<vector<int>> bars(vector<long double> scanline,long double iDiff,bool pri
 
 	  return bars;
 }
-
 vector<int> leftPadding(vector<vector<int>> bars)
 {
 
