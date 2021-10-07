@@ -8,7 +8,7 @@ cl /clr main.cpp
 
 to run
 
-main.exe "C:\\Users\\Gerard\\Desktop\\business\\barcodes\\barcode1_mbdb.jpg" "false"
+main.exe "barcode1_mbdb.jpg" "false"
 
 Alternatively, you can install msys (https://www.msys2.org/) and use the g++ compiler
 to compile ,run
